@@ -28,7 +28,7 @@ def index():
 
 @app.route('/', methods=['POST'])
 def upload_file():
-
+    print(request.files)
     uploaded_file = request.files['file']
 
 # Check if the file name was left blank or isn't in the extensions list. 
@@ -55,4 +55,5 @@ def upload_file():
 
 # Upload your file as a stream. NOTE! IMPORTANT! If you are uploading a big file, this will take awhile if it's over 128MB.
     video_response = videos_api.upload(video_id, uploaded_file.stream)
+    print(request.files)
     return redirect(url_for('index'))
