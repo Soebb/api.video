@@ -28,36 +28,31 @@ def index():
 
 @app.route('/', methods=['POST'])
 def upload_file():
-  
-# Retrieve files and form data, they are in two separate parts of the request info from Flask. 
-    my_files = request.files
 
-# The files are in an immutable multi-dictionary, so loop through to grab them all. 
-    for item in my_files:
-        uploaded_file = my_files.get(item)
+    uploaded_file = request.files['file']
 
 # Check if the file name was left blank or isn't in the extensions list. 
-        if uploaded_file.filename != '':
-            file_ext = os.path.splitext(uploaded_file.filename)[1]
-        if file_ext not in app.config['UPLOAD_EXTENSIONS']:
-            abort(400)
+    if uploaded_file.filename != '':
+        file_ext = os.path.splitext(uploaded_file.filename)[1]
+    if file_ext not in app.config['UPLOAD_EXTENSIONS']:
+        abort(400)
 
 # Start up the client and connect 
-        client = apivideo.AuthenticatedApiClient(api_key)
-        client.connect()
+    client = apivideo.AuthenticatedApiClient(api_key)
+    client.connect()
 
 # Set up to use the videos endpoint
-        videos_api = VideosApi(client)
+    videos_api = VideosApi(client)
 
 # Add the file name from the FileStorage object from Flask
-        video_create_payload = {
-            "title": uploaded_file.filename,
-        }
+    video_create_payload = {
+        "title": uploaded_file.filename,
+    }
 
 # Create a video container to upload your video into and retrieve the video ID for the container
-        response = videos_api.create(video_create_payload)
-        video_id = response["video_id"]
+    response = videos_api.create(video_create_payload)
+    video_id = response["video_id"]
 
 # Upload your file as a stream. NOTE! IMPORTANT! If you are uploading a big file, this will take awhile if it's over 128MB.
-        video_response = videos_api.upload(video_id, uploaded_file.stream)
+    video_response = videos_api.upload(video_id, uploaded_file.stream)
     return redirect(url_for('index'))
