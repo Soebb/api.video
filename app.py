@@ -6,6 +6,9 @@ from flask import Flask, render_template, request, redirect, url_for, abort
 
 app = Flask(__name__)
 
+# api.video account api key
+api_key = os.environ.get("api_key")
+
 # You can do this for extra security. MAX_CONTENT_LENGTH lets you set how big files can be. 
 # UPLOAD_EXTENSIONS lets you limit what types of files can be uploaded. 
 app.config['MAX_CONTENT_LENGTH'] = 5000 * 5000 * 100000
@@ -28,7 +31,6 @@ def upload_file():
   
 # Retrieve files and form data, they are in two separate parts of the request info from Flask. 
     my_files = request.files
-    api_key = request.form['API Key']
 
 # The files are in an immutable multi-dictionary, so loop through to grab them all. 
     for item in my_files:
